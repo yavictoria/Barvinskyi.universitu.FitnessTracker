@@ -1,0 +1,18 @@
+{% load socialaccount %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <!-- Include Font Awesome CSS via CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <h2>Register with Google</h2>
+    <a href="{% provider_login_url 'google'%}?next=/">
+        <!-- Use the appropriate Font Awesome icon class -->
+        <i class="fab fa-google"></i> Login with Google
+    </a>
+</body>
+</html>

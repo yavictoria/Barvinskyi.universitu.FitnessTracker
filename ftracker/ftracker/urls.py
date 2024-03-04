@@ -1,7 +1,7 @@
 """
-URL configuration for ftracker project.
+URL configuration for CityVotingPlatform project.
 
-The `urlpatterns` list routes URLs to views. For more information please see:
+The urlpatterns list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.0/topics/http/urls/
 Examples:
 Function views
@@ -15,8 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+import ftracker.mainapp.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('register/', ftracker.mainapp.views.register, name='register'),
+    path("ftracker_registration/", include("allauth.urls")),
+    path('accounts/google/login/callback/', ftracker.mainapp.views.callback_view, name='google_callback'),
+    path('', ftracker.mainapp.views.home, name='home'),  # Home page
 ]
