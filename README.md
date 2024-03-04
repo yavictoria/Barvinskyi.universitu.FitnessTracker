@@ -37,6 +37,3 @@ Week 1 (02/27 - 03/06):
 - Create basic project structure on GitHub repository
 - Configure Continuous Integration/Continuous Delivery pipeline
 - Document getting started guide for local development setup
-
-
-5. Set up Continuous Integration/Continuous Delivery (CI/CD) pipeline
