@@ -16,12 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-import ftracker.mainapp.views
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('register/', ftracker.mainapp.views.register, name='register'),
-    path("ftracker_registration/", include("allauth.urls")),
-    path('accounts/google/login/callback/', ftracker.mainapp.views.callback_view, name='google_callback'),
-    path('', ftracker.mainapp.views.home, name='home'),  # Home page
+    path('', include('mainapp.urls')),
+    path('google/login/', RedirectView.as_view(url='/accounts/google/login/')),
+    # path('register/', views.register, name='register'),
+    # path("ftracker_registration/", include("allauth.urls")),
+    # path('accounts/google/login/callback/', views.callback_view, name='google_callback'),
+    # path('', views.home, name='home'),  # Home page
 ]
