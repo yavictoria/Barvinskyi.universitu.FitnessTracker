@@ -32,8 +32,8 @@ To start your journey in a field of work-out, you need to register or sign in wi
 
 ## Project Task Decomposition
 Week 1 (02/27 - 03/06):
-- Implement feature: User Registration with Google OAuth 2.0
+- Implement feature: User Registration with Google OAuth 2.0 ✔️
 - Set up Azure deployment environment
-- Create basic project structure on GitHub repository
+- Create basic project structure on GitHub repository ✔️
 - Configure Continuous Integration/Continuous Delivery pipeline
-- Document getting started guide for local development setup
+- Document getting started guide for local development setup ✔️
