@@ -22,6 +22,7 @@ Fitness Tracker is the best desicion for people who wants to work out and feels 
 
 ### Features
 - User Authentication with Google Oauth 2.0.
+- Welcome email upon registration.
 - In progress.
 
 ### Architecture
@@ -37,3 +38,17 @@ Week 1 (02/27 - 03/06):
 - Create basic project structure on GitHub repository ✔️
 - Configure Continuous Integration/Continuous Delivery pipeline
 - Document getting started guide for local development setup ✔️
+
+Week 2 (03/06 - 03/13):
+- Implement feature: Dashboard displaying summary statistics
+- Set up email notification system for welcome messages ✔️
+- Develop frontend layout for dashboard UI
+- Implement backend logic for retrieving and displaying user data ✔️
+- Write unit tests for dashboard functionalities
+
+Week 3 (03/13 - 03/20):
+- Implement feature: Workout Tracking functionality
+- Integrate workout logging with user profiles
+- Design and implement workout entry forms
+- Implement backend logic for storing workout data
+- Write unit tests for workout tracking functionalities
