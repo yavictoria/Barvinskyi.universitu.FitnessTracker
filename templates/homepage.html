@@ -31,9 +31,9 @@
     <section class="main">
         <h1>Fitness Tracker</h1>
         <br>
-        <a href="profile/">Profile</a>
         {% if user.is_authenticated %}
             <a href="{% url 'logout_view' %}">Logout</a>
+            <a href="profile/">Profile</a>
         {% else %}
             <a href="{% provider_login_url 'google' %}?next=/">Enter with Google</a>
         {% endif %}
