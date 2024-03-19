@@ -21,9 +21,4 @@ from django.views.generic.base import RedirectView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('mainapp.urls')),
-    path('google/login/', RedirectView.as_view(url='/accounts/google/login/')),
-    # path('register/', views.register, name='register'),
-    # path("ftracker_registration/", include("allauth.urls")),
-    # path('accounts/google/login/callback/', views.callback_view, name='google_callback'),
-    # path('', views.home, name='home'),  # Home page
 ]
