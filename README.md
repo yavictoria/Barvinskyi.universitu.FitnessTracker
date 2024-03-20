@@ -36,19 +36,19 @@ Week 1 (02/27 - 03/06):
 - Implement feature: User Registration with Google OAuth 2.0 ✔️
 - Set up Azure deployment environment ✔️
 - Create basic project structure on GitHub repository ✔️
-- Configure Continuous Integration/Continuous Delivery pipeline
+- Configure Continuous Integration/Continuous Delivery pipeline ✔️
 - Document getting started guide for local development setup ✔️
 
 Week 2 (03/06 - 03/13):
-- Implement feature: Dashboard displaying summary statistics
+- Implement feature: Dashboard displaying summary statistics ✔️
 - Set up email notification system for welcome messages ✔️
-- Develop frontend layout for dashboard UI
+- Develop frontend layout for dashboard UI ✔️
 - Implement backend logic for retrieving and displaying user data ✔️
-- Write unit tests for dashboard functionalities
+- Write unit tests for dashboard functionalities ✔️
 
 Week 3 (03/13 - 03/20):
-- Implement feature: Workout Tracking functionality
-- Integrate workout logging with user profiles
-- Design and implement workout entry forms
-- Implement backend logic for storing workout data
-- Write unit tests for workout tracking functionalities
+- Implement feature: Workout Tracking functionality ✔️
+- Integrate workout logging with user profiles ✔️
+- Design and implement workout entry forms ✔️
+- Implement backend logic for storing workout data ✔️
+- Write unit tests for workout tracking functionalities ✔️
