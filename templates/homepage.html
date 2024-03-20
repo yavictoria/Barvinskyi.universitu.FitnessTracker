@@ -29,14 +29,20 @@
 </head>
 <body>
     <section class="main">
-        <h1>Fitness Tracker</h1>
+        <h1><a href="/">Fitness Tracker</a></h1>
         <br>
         {% if user.is_authenticated %}
+            {% if request.path != '/dashboard/' %}
+                <a href="profile/">Profile</a>
+                <a href="dashboard/">View overall statistic</a>
+            {% else %}
+            <a href="/">Back to homepage</a>
+            {% endif %}
             <a href="{% url 'logout_view' %}">Logout</a>
-            <a href="profile/">Profile</a>
         {% else %}
             <a href="{% provider_login_url 'google' %}?next=/">Enter with Google</a>
         {% endif %}
     </section>
+    {% block content %} {% endblock %}
 </body>
 </html>

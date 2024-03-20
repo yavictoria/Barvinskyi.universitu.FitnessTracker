@@ -1,9 +1,11 @@
-from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from django.contrib.auth.models import User
+from .models import Workout
 
 
-class CreateUserForm(UserCreationForm):
+class WorkoutForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        model = Workout
+        fields = ['description', 'all_sets_done', 'all_arms_done', 'all_legs_done', 'all_chest_done']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4}),
+        }
