@@ -14,7 +14,8 @@ SECRET_KEY = 'django-insecure-1-k#i)op$f4)_qbj1i07v+e7_f4qn13jia-15!)3(*s&dcy85_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['ftracker-uni.azurewebsites.net', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://ftracker-uni.azurewebsites.net']
 
 # Application definition
 
