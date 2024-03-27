@@ -52,3 +52,10 @@ Week 3 (03/13 - 03/20):
 - Design and implement workout entry forms ✔️
 - Implement backend logic for storing workout data ✔️
 - Write unit tests for workout tracking functionalities ✔️
+
+Week 4 (03/20 - 03/27):
+- Implement feature: Goal Setting for fitness objectives ✔️
+- Develop UI for setting and managing fitness goals ✔️
+- Integrate goal tracking with user profiles ✔️
+- Implement backend logic for goal management ✔️
+- Write unit tests for goal setting functionalities
