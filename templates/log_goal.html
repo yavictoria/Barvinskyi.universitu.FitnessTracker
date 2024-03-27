@@ -1,0 +1,22 @@
+{% extends 'profile.html' %}
+
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="content">
+
+    <h2>Log your progress towards Goal</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+    <a href="{% url 'profile' %}">Back to Profile</a>
+</div>
+</body>
+</html>
+{% endblock %}

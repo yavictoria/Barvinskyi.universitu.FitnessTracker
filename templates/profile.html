@@ -38,9 +38,11 @@
 <body>
     <div class="content">
         <div class="content-topic">
-            <p>Welcome, {{ username }}!</p>
+            <p>Welcome, {{ request.user.username }}!</p>
             <a href="/">Go to homepage</a>
-            <a href="register_workout/">Register workout</a>
+            <a href="{%url 'register_workout' %}">Register workout</a>
+            <a href="{%url 'create_fitness_goal' %}">Set personal goal</a>
+            <a href="{%url 'choose_goal' %}">Track progress towards goal</a>
         </div>
     </div>
     {% block content %} {% endblock %}

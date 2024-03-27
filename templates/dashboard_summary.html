@@ -72,4 +72,18 @@
     <p>Total Percentage of All Chest Done: {{ percentage_all_chest_done }}%</p>
   </div>
 </section>
+
+<section class="completed-goals">
+  <h2>Completed Goals</h2>
+  <div class="workout-container">
+    {% for goal in completed_goals %}
+    <div class="workout-card">
+      <h3>{{ goal.description }}</h3>
+      <p>Goal Type: {{ goal.get_goal_type_display }}</p>
+      <p>Target Value: {{ goal.target_value }}</p>
+      <p>Achieved Value: {{ goal.achieved_value }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
 {% endblock %}
