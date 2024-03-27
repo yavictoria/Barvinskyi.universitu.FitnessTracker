@@ -58,4 +58,4 @@ Week 4 (03/20 - 03/27):
 - Develop UI for setting and managing fitness goals ✔️
 - Integrate goal tracking with user profiles ✔️
 - Implement backend logic for goal management ✔️
-- Write unit tests for goal setting functionalities
+- Write unit tests for goal setting functionalities ✔️
