@@ -10,7 +10,6 @@ from .views import welcome_email
 def check_new_user(sender, instance, created, **kwargs):
     if created:
         instance._newly_created = True
-        print(f"_newly_created attribute for user {instance.username}: {instance._newly_created}")
     elif not hasattr(instance, '_newly_created'):
         instance._newly_created = False
 
