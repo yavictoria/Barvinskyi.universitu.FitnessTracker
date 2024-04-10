@@ -59,3 +59,17 @@ Week 4 (03/20 - 03/27):
 - Integrate goal tracking with user profiles ✔️
 - Implement backend logic for goal management ✔️
 - Write unit tests for goal setting functionalities ✔️
+
+Week 5 (03/27 - 04/03):
+- Implement feature: Progress Monitoring with visual analytics
+- Design and implement charts and graphs for progress visualization
+- Integrate progress tracking with user data ✔️
+- Implement backend logic for generating progress reports
+- Write unit tests for progress monitoring functionalities
+
+Week 6 (04/03 - 04/10):
+- Implement feature: Activity Feed for social interaction ✔️
+- Design UI for user activity feed ✔️
+- Implement backend logic for displaying user activities ✔️
+- Enable user interactions such as likes and comments ✔️
+- Write unit tests for activity feed functionalities
