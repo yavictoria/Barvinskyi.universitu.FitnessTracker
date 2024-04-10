@@ -3,13 +3,16 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import logout
 from django.conf import settings
 from django.core.mail import send_mail
-from .forms import WorkoutForm, FitnessGoalForm, FitnessRecordForm, FitnessGoalSelectionForm
-from .models import Workout, FitnessGoal, CompletedGoals
 
 
-# Create your views here.
+from .forms import WorkoutForm, FitnessGoalForm, FitnessRecordForm, FitnessGoalSelectionForm, ActivityForm, CommentForm
+from .models import Workout, FitnessGoal, CompletedGoals, Activity, UserLiked
+
+
 def home(request):
-    return render(request, "homepage.html")
+    activities = Activity.objects.order_by('-pub_date')[:5]
+    comment_form = CommentForm()
+    return render(request, "activity_feed.html", {'activities': activities, 'comment_form': comment_form})
 
 
 def profile(request):
@@ -126,3 +129,48 @@ def log_goal_record(request, goal_id):
 
 def completed_goal(request):
     return render(request, 'goal_completed.html')
+
+
+def create_activity(request):
+    if request.method == 'POST':
+        form = ActivityForm(request.user, request.POST)
+        if form.is_valid():
+            activity = form.save(commit=False)
+            activity.user = request.user
+            completed_goal = form.cleaned_data['completed_goal']
+            activity.completed_goal = completed_goal
+            activity.save()
+            return redirect('home')  # Redirect to the homepage after creating activity
+    else:
+        form = ActivityForm(request.user)
+    return render(request, 'create_activity.html', {'form': form})
+
+
+def add_comment(request, activity_id):
+    activity = Activity.objects.get(pk=activity_id)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.activity = activity
+            comment.save()
+            return redirect('home')
+    else:
+        form = CommentForm()
+    return render(request, 'homepage.html', {'form': form})
+
+
+def like_activity(request, activity_id):
+    if request.method == 'POST':
+        activity = get_object_or_404(Activity, pk=activity_id)
+        user_liked = UserLiked.objects.filter(user=request.user, activity=activity)
+        if user_liked.exists():
+            user_liked.delete()
+            activity.likes -= 1
+            activity.save()
+        else:
+            UserLiked.objects.create(user=request.user, activity=activity)
+            activity.likes += 1
+            activity.save()
+        return redirect('home')

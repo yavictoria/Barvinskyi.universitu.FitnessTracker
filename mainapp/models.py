@@ -40,3 +40,26 @@ class CompletedGoals(models.Model):
     description = models.CharField(max_length=200)
     target_value = models.FloatField()
     achieved_value = models.FloatField(default=0)
+
+    def __str__(self):
+        return self.description
+
+
+class Activity(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    completed_goal = models.ForeignKey(CompletedGoals, on_delete=models.CASCADE)
+    pub_date = models.DateTimeField(default=timezone.now)
+    content = models.TextField()
+    likes = models.IntegerField(default=0)
+
+
+class UserLiked(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    activity = models.ForeignKey(Activity, on_delete=models.CASCADE, related_name='comments')
+    comment_text = models.TextField()
+    pub_date = models.DateTimeField(default=timezone.now)

@@ -13,4 +13,7 @@ urlpatterns = [
     path('profile/complete_goal', views.completed_goal, name='completed_goal'),
     path('profile/log_goal/<int:goal_id>/', views.log_goal_record, name='log_goal_record'),
     path('dashboard/', views.workout_logs, name='workout_logs'),
+    path('create_activity/', views.create_activity, name='create_activity'),
+    path('add_comment/<int:activity_id>', views.add_comment, name='add_comment'),
+    path('like/<int:activity_id>/', views.like_activity, name='like_activity'),
 ]
