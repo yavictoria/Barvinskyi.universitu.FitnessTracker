@@ -63,3 +63,8 @@ class Comment(models.Model):
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE, related_name='comments')
     comment_text = models.TextField()
     pub_date = models.DateTimeField(default=timezone.now)
+
+
+class SendNotif(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    accept_notif = models.BooleanField(default=True)

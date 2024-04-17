@@ -1,8 +1,12 @@
 from django.test import TestCase, RequestFactory
 from django.contrib.auth.models import User
+from django.utils import timezone
+from django.core import mail
+
+
 from .models import Workout, FitnessGoal, CompletedGoals
 from .views import register_workout, workout_logs, create_fitness_goal, choose_goal, log_goal_record, completed_goal
-from .forms import FitnessGoalForm, FitnessGoalSelectionForm, FitnessRecordForm
+from mainapp.management.commands.check_workout import Command
 
 
 class WorkoutViewTests(TestCase):
@@ -74,4 +78,33 @@ class WorkoutViewTests(TestCase):
         request = self.factory.get('/completed_goal/')
         request.user = self.user
         response = completed_goal(request)
-        self.assertEqual(response.status_code, 200)  # Should return success
+        self.assertEqual(response.status_code, 200)
+
+    class WorkoutNotificationTestCase(TestCase):
+        def setUp(self):
+            # Create a test user
+            self.user = User.objects.create_user(username='testuser', email='pashchuknik@gmail.com',
+                                                 password='testpassword')
+
+            # Create old workouts
+            Workout.objects.create(user=self.user, date=timezone.now() - timezone.timedelta(days=10),
+                                   description='Test workout 1')
+            Workout.objects.create(user=self.user, date=timezone.now() - timezone.timedelta(days=8),
+                                   description='Test workout 2')
+
+        def test_send_notifications(self):
+            # Call the management command
+            command = Command()
+            command.handle()
+
+            # Print out the contents of the outbox
+            for email in mail.outbox:
+                print(f"To: {email.to}, Subject: {email.subject}")
+
+            # Check that one email was sent
+            self.assertEqual(len(mail.outbox), 2)
+
+            # Verify email contents
+            email = mail.outbox[0]
+            self.assertEqual(email.subject, 'Reminder: Last Workout Was More Than a Week Ago')
+            self.assertEqual(email.to, ['pashchuknik@gmail.com'])

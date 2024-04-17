@@ -73,3 +73,10 @@ Week 6 (04/03 - 04/10):
 - Implement backend logic for displaying user activities ✔️
 - Enable user interactions such as likes and comments ✔️
 - Write unit tests for activity feed functionalities
+
+Week 7 (04/10 - 04/17):
+- Implement feature: Reminder Notifications for workout schedules ✔️
+- Set up notification triggers based on user preferences ✔️
+- Develop UI for managing notification settings ✔️
+- Implement backend logic for sending reminder emails ✔️
+- Write unit tests for reminder notification functionalities ✔️

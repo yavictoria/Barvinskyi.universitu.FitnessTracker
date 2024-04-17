@@ -4,9 +4,8 @@ from django.contrib.auth import logout
 from django.conf import settings
 from django.core.mail import send_mail
 
-
 from .forms import WorkoutForm, FitnessGoalForm, FitnessRecordForm, FitnessGoalSelectionForm, ActivityForm, CommentForm
-from .models import Workout, FitnessGoal, CompletedGoals, Activity, UserLiked
+from .models import Workout, FitnessGoal, CompletedGoals, Activity, UserLiked, SendNotif
 
 
 def home(request):
@@ -19,7 +18,11 @@ def profile(request):
     username = None
     if request.user.is_authenticated:
         username = request.user.username
-    return render(request, "profile.html", {'username': username})
+    send_notif, created = SendNotif.objects.get_or_create(user=request.user)
+    if send_notif.accept_notif:
+        return render(request, "profile.html", {'username': username, 'send_notif': send_notif})
+    else:
+        return render(request, "profile.html", {'username': username})
 
 
 def logout_view(request):
@@ -102,7 +105,6 @@ def choose_goal(request):
     return render(request, 'select_goal.html', {'form': form})
 
 
-
 def log_goal_record(request, goal_id):
     fitness_goal = get_object_or_404(FitnessGoal, id=goal_id, user=request.user)
     if request.method == 'POST':
@@ -119,6 +121,24 @@ def log_goal_record(request, goal_id):
                     achieved_value=fitness_goal.achieved_value
                 )
                 fitness_goal.delete()
+                notif_obj, created = SendNotif.objects.get_or_create(user=request.user)
+                if notif_obj.accept_notif:
+                    user = request.user
+                    subject = 'Congratulations!'
+                    message = f"{user.username}, you've completed your goal: {fitness_goal.description}. Keep going!"
+                    from_email = settings.EMAIL_HOST_USER
+                    recipient_list = [user.email]
+                    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                    count = CompletedGoals.objects.count()
+                    if count % 5 == 0 and count != 0:
+                        subject = 'Congratulations!'
+                        message = (
+                            f"{user.username}, you've completed your {count}th goal: {fitness_goal.description}. "
+                            f"Keep going!")
+                        from_email = settings.EMAIL_HOST_USER
+                        recipient_list = [user.email]
+                        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                    return redirect('profile')
                 return redirect('profile')
             fitness_goal.save()
             return redirect('profile')
@@ -174,3 +194,20 @@ def like_activity(request, activity_id):
             activity.likes += 1
             activity.save()
         return redirect('home')
+
+
+def toggle_notification_setting(request):
+    if request.method == 'POST':
+        user = request.user
+        if SendNotif.objects.filter(user=user).exists():
+            send_notif = SendNotif.objects.get(user=user)
+            send_notif.accept_notif = not send_notif.accept_notif
+            send_notif.save()
+            return redirect('profile')
+        else:
+            send_notif = SendNotif.objects.create(user=user, accept_notif=False)
+            return redirect('profile')
+
+    else:
+        send_notif = SendNotif.objects.filter(user=request.user).first()
+        return redirect('profile')
