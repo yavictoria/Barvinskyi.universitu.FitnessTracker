@@ -1,11 +1,14 @@
 from django.test import TestCase, RequestFactory
 from django.contrib.auth.models import User
+from django.urls import reverse
 from django.utils import timezone
 from django.core import mail
+from django.test import Client
 
 
-from .models import Workout, FitnessGoal, CompletedGoals
-from .views import register_workout, workout_logs, create_fitness_goal, choose_goal, log_goal_record, completed_goal
+from .models import Workout, FitnessGoal, CompletedGoals, Badge, Achievement
+from .views import register_workout, workout_logs, create_fitness_goal, choose_goal, log_goal_record, completed_goal, \
+    update_workout_achievements, update_achievements, award_badge
 from mainapp.management.commands.check_workout import Command
 
 
@@ -108,3 +111,35 @@ class WorkoutViewTests(TestCase):
             email = mail.outbox[0]
             self.assertEqual(email.subject, 'Reminder: Last Workout Was More Than a Week Ago')
             self.assertEqual(email.to, ['pashchuknik@gmail.com'])
+
+
+class AchievementsTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', email='test@example.com', password='testpassword')
+        self.client = Client()
+
+    def test_achievements_view(self):
+        self.client.login(username='testuser', password='testpassword')
+        response = self.client.get(reverse('achievements'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('workout_badge' in response.context)
+        self.assertTrue('goal_badge' in response.context)
+        self.assertTrue('post_badge' in response.context)
+        self.assertTrue('comments_badge' in response.context)
+
+    def test_award_badge_function(self):
+        award_badge(self.user, 'bronze', 'Workout')
+        self.assertTrue(Badge.objects.filter(user=self.user, badge_type='bronze', awarded_for='Workout').exists())
+
+    def test_update_workout_achievements_function(self):
+        achievements = Achievement.objects.create(user=self.user, workouts_num=5)
+        update_workout_achievements(self.user, achievements)
+        self.assertTrue(Badge.objects.filter(user=self.user, badge_type='bronze', awarded_for='Workout').exists())
+
+    def test_update_achievements_function(self):
+        awarded_for_values = ['Workout', 'Goal', 'Post', 'Comment']
+        for awarded_for in awarded_for_values:
+            Badge.objects.create(user=self.user, badge_type='bronze', awarded_for=awarded_for)
+        update_achievements(self.user)
+        for awarded_for in awarded_for_values:
+            self.assertTrue(Badge.objects.filter(user=self.user, awarded_for=awarded_for).exists())

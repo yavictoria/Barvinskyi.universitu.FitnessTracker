@@ -32,10 +32,11 @@
         <h1><a href="/">Fitness Tracker</a></h1>
         <br>
         {% if user.is_authenticated %}
-                {% if request.path != '/dashboard/' and request.path != '/create_activity/' %}
+                {% if request.path != '/dashboard/' and request.path != '/create_activity/' and request.path != '/achievements/' %}
                     <a href="profile/">Profile</a>
                     <a href="dashboard/">View overall statistic</a>
                     <a href="create_activity/">Create an Activity</a>
+                    <a href="achievements/">Achievements</a>
                 {% else %}
                     <a href="/">Back to homepage</a>
                 {% endif %}

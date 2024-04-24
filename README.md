@@ -80,3 +80,10 @@ Week 7 (04/10 - 04/17):
 - Develop UI for managing notification settings ✔️
 - Implement backend logic for sending reminder emails ✔️
 - Write unit tests for reminder notification functionalities ✔️
+
+Week 8 (04/17 - 04/24):
+- Implement feature: Achievement Badges for gamification ✔️
+- Design badge system and criteria for achievement ✔️
+- Integrate badge awards with user accomplishments ✔️
+- Implement backend logic for awarding badges ✔️
+- Write unit tests for achievement badge functionalities ✔️

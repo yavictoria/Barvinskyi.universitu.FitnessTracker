@@ -68,3 +68,18 @@ class Comment(models.Model):
 class SendNotif(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     accept_notif = models.BooleanField(default=True)
+
+
+class Achievement(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    workouts_num = models.IntegerField(default=0)
+    goals_num = models.IntegerField(default=0)
+    posts_num = models.IntegerField(default=0)
+    comments_num = models.IntegerField(default=0)
+
+
+class Badge(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    badge_type = models.CharField(max_length=50)
+    awarded_for = models.CharField(max_length=50, default='Comment')
+

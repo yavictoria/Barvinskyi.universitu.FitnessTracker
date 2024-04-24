@@ -3,9 +3,68 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import logout
 from django.conf import settings
 from django.core.mail import send_mail
+from django.db.models import Count
 
 from .forms import WorkoutForm, FitnessGoalForm, FitnessRecordForm, FitnessGoalSelectionForm, ActivityForm, CommentForm
-from .models import Workout, FitnessGoal, CompletedGoals, Activity, UserLiked, SendNotif
+from .models import Workout, FitnessGoal, CompletedGoals, Activity, UserLiked, SendNotif, Badge, Achievement
+
+
+def award_badge(user, badge_type, awarded_for):
+    Badge.objects.create(user=user, badge_type=badge_type, awarded_for=awarded_for)
+
+
+def update_workout_achievements(user, achievements):
+    workout_count = achievements.workouts_num
+    if workout_count == 5 and not Badge.objects.filter(user=user, badge_type='bronze', awarded_for='Workout').exists():
+        award_badge(user, 'bronze', awarded_for='Workout')
+    elif workout_count == 10 and not Badge.objects.filter(user=user, badge_type='silver', awarded_for='Workout').exists():
+        award_badge(user, 'silver', awarded_for='Workout')
+    elif workout_count == 50 and not Badge.objects.filter(user=user, badge_type='gold', awarded_for='Workout').exists():
+        award_badge(user, 'gold', awarded_for='Workout')
+    elif workout_count == 100 and not Badge.objects.filter(user=user, badge_type='brilliant', awarded_for='Workout').exists():
+        award_badge(user, 'brilliant', awarded_for='Workout')
+
+def update_goal_achievements(user, achievements):
+    goal_count = achievements.goals_num
+    if goal_count == 5 and not Badge.objects.filter(user=user, badge_type='bronze', awarded_for='Goal').exists():
+        award_badge(user, 'bronze', awarded_for='Goal')
+    elif goal_count == 10 and not Badge.objects.filter(user=user, badge_type='silver', awarded_for='Goal').exists():
+        award_badge(user, 'silver', awarded_for='Goal')
+    elif goal_count == 50 and not Badge.objects.filter(user=user, badge_type='gold', awarded_for='Goal').exists():
+        award_badge(user, 'gold', awarded_for='Goal')
+    elif goal_count == 100 and not Badge.objects.filter(user=user, badge_type='brilliant', awarded_for='Goal').exists():
+        award_badge(user, 'brilliant', awarded_for='Goal')
+
+def update_post_achievements(user, achievements):
+    post_count = achievements.posts_num
+    if post_count == 5 and not Badge.objects.filter(user=user, badge_type='bronze', awarded_for='Post').exists():
+        award_badge(user, 'bronze', awarded_for='Post')
+    elif post_count == 10 and not Badge.objects.filter(user=user, badge_type='silver', awarded_for='Post').exists():
+        award_badge(user, 'silver', awarded_for='Post')
+    elif post_count == 50 and not Badge.objects.filter(user=user, badge_type='gold', awarded_for='Post').exists():
+        award_badge(user, 'gold', awarded_for='Post')
+    elif post_count == 100 and not Badge.objects.filter(user=user, badge_type='brilliant', awarded_for='Post').exists():
+        award_badge(user, 'brilliant', awarded_for='Post')
+
+def update_comment_achievements(user, achievements):
+    comment_count = achievements.comments_num
+    if comment_count == 5 and not Badge.objects.filter(user=user, badge_type='bronze', awarded_for='Comment').exists():
+        award_badge(user, 'bronze', awarded_for='Comment')
+    elif comment_count == 10 and not Badge.objects.filter(user=user, badge_type='silver', awarded_for='Comment').exists():
+        award_badge(user, 'silver', awarded_for='Comment')
+    elif comment_count == 50 and not Badge.objects.filter(user=user, badge_type='gold', awarded_for='Comment').exists():
+        award_badge(user, 'gold', awarded_for='Comment')
+    elif comment_count == 100 and not Badge.objects.filter(user=user, badge_type='brilliant', awarded_for='Comment').exists():
+        award_badge(user, 'brilliant', awarded_for='Comment')
+
+
+def update_achievements(user):
+    achievements, _ = Achievement.objects.get_or_create(user=user)
+    update_workout_achievements(user, achievements)
+    update_goal_achievements(user, achievements)
+    update_post_achievements(user, achievements)
+    update_comment_achievements(user, achievements)
+    achievements.save()
 
 
 def home(request):
@@ -48,6 +107,10 @@ def register_workout(request):
             workout = form.save(commit=False)
             workout.user = request.user
             workout.save()
+            achievements, _ = Achievement.objects.get_or_create(user=request.user)
+            achievements.workouts_num += 1
+            achievements.save()
+            update_achievements(request.user)
             return redirect('home')
     else:
         form = WorkoutForm()
@@ -120,6 +183,10 @@ def log_goal_record(request, goal_id):
                     target_value=fitness_goal.target_value,
                     achieved_value=fitness_goal.achieved_value
                 )
+                achievements, _ = Achievement.objects.get_or_create(user=request.user)
+                achievements.goals_num += 1
+                achievements.save()
+                update_achievements(request.user)
                 fitness_goal.delete()
                 notif_obj, created = SendNotif.objects.get_or_create(user=request.user)
                 if notif_obj.accept_notif:
@@ -160,6 +227,10 @@ def create_activity(request):
             completed_goal = form.cleaned_data['completed_goal']
             activity.completed_goal = completed_goal
             activity.save()
+            achievements, _ = Achievement.objects.get_or_create(user=request.user)
+            achievements.posts_num += 1
+            achievements.save()
+            update_achievements(request.user)
             return redirect('home')  # Redirect to the homepage after creating activity
     else:
         form = ActivityForm(request.user)
@@ -175,6 +246,10 @@ def add_comment(request, activity_id):
             comment.user = request.user
             comment.activity = activity
             comment.save()
+            achievements, _ = Achievement.objects.get_or_create(user=request.user)
+            achievements.comments_num += 1
+            achievements.save()
+            update_achievements(request.user)
             return redirect('home')
     else:
         form = CommentForm()
@@ -211,3 +286,12 @@ def toggle_notification_setting(request):
     else:
         send_notif = SendNotif.objects.filter(user=request.user).first()
         return redirect('profile')
+
+
+def achievements(request):
+    workout_badge = Badge.objects.filter(user=request.user, awarded_for='Workout').values('badge_type').annotate(count=Count('badge_type'))
+    goal_badge = Badge.objects.filter(user=request.user, awarded_for='Goal').values('badge_type').annotate(count=Count('badge_type'))
+    post_badge = Badge.objects.filter(user=request.user, awarded_for='Post').values('badge_type').annotate(count=Count('badge_type'))
+    comments_badge = Badge.objects.filter(user=request.user, awarded_for='Comment').values('badge_type').annotate(count=Count('badge_type'))
+
+    return render(request, 'achievements.html', {'workout_badge': workout_badge, 'goal_badge': goal_badge, 'post_badge':post_badge, 'comments_badge':comments_badge})

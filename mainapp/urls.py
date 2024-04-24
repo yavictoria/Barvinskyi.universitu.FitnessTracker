@@ -17,4 +17,5 @@ urlpatterns = [
     path('add_comment/<int:activity_id>', views.add_comment, name='add_comment'),
     path('like/<int:activity_id>/', views.like_activity, name='like_activity'),
     path('toggle-notification/', views.toggle_notification_setting, name='toggle_notification_setting'),
+    path('achievements/', views.achievements, name='achievements'),
 ]
