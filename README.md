@@ -87,3 +87,10 @@ Week 8 (04/17 - 04/24):
 - Integrate badge awards with user accomplishments ✔️
 - Implement backend logic for awarding badges ✔️
 - Write unit tests for achievement badge functionalities ✔️
+
+Week 9 (04/24 - 05/01):
+- Implement feature: Social Integration for connecting with friends and fitness communities ✔️
+- Integrate social media APIs for user authentication and sharing achievements
+- Design UI for social features such as friend requests and activity sharing ✔️
+- Implement backend logic for handling social interactions ✔️
+- Write unit tests for social integration functionalities

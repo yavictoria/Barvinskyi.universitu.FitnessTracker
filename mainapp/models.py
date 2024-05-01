@@ -83,3 +83,11 @@ class Badge(models.Model):
     badge_type = models.CharField(max_length=50)
     awarded_for = models.CharField(max_length=50, default='Comment')
 
+
+class Friendship(models.Model):
+    user = models.ForeignKey(User, related_name='friends', on_delete=models.CASCADE)
+    friend = models.ForeignKey(User, related_name='user_friends', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['user', 'friend']

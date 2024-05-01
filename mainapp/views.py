@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import logout
 from django.conf import settings
@@ -6,7 +7,7 @@ from django.core.mail import send_mail
 from django.db.models import Count
 
 from .forms import WorkoutForm, FitnessGoalForm, FitnessRecordForm, FitnessGoalSelectionForm, ActivityForm, CommentForm
-from .models import Workout, FitnessGoal, CompletedGoals, Activity, UserLiked, SendNotif, Badge, Achievement
+from .models import Workout, FitnessGoal, CompletedGoals, Activity, UserLiked, SendNotif, Badge, Achievement, Friendship
 
 
 def award_badge(user, badge_type, awarded_for):
@@ -17,12 +18,15 @@ def update_workout_achievements(user, achievements):
     workout_count = achievements.workouts_num
     if workout_count == 5 and not Badge.objects.filter(user=user, badge_type='bronze', awarded_for='Workout').exists():
         award_badge(user, 'bronze', awarded_for='Workout')
-    elif workout_count == 10 and not Badge.objects.filter(user=user, badge_type='silver', awarded_for='Workout').exists():
+    elif workout_count == 10 and not Badge.objects.filter(user=user, badge_type='silver',
+                                                          awarded_for='Workout').exists():
         award_badge(user, 'silver', awarded_for='Workout')
     elif workout_count == 50 and not Badge.objects.filter(user=user, badge_type='gold', awarded_for='Workout').exists():
         award_badge(user, 'gold', awarded_for='Workout')
-    elif workout_count == 100 and not Badge.objects.filter(user=user, badge_type='brilliant', awarded_for='Workout').exists():
+    elif workout_count == 100 and not Badge.objects.filter(user=user, badge_type='brilliant',
+                                                           awarded_for='Workout').exists():
         award_badge(user, 'brilliant', awarded_for='Workout')
+
 
 def update_goal_achievements(user, achievements):
     goal_count = achievements.goals_num
@@ -35,6 +39,7 @@ def update_goal_achievements(user, achievements):
     elif goal_count == 100 and not Badge.objects.filter(user=user, badge_type='brilliant', awarded_for='Goal').exists():
         award_badge(user, 'brilliant', awarded_for='Goal')
 
+
 def update_post_achievements(user, achievements):
     post_count = achievements.posts_num
     if post_count == 5 and not Badge.objects.filter(user=user, badge_type='bronze', awarded_for='Post').exists():
@@ -46,15 +51,18 @@ def update_post_achievements(user, achievements):
     elif post_count == 100 and not Badge.objects.filter(user=user, badge_type='brilliant', awarded_for='Post').exists():
         award_badge(user, 'brilliant', awarded_for='Post')
 
+
 def update_comment_achievements(user, achievements):
     comment_count = achievements.comments_num
     if comment_count == 5 and not Badge.objects.filter(user=user, badge_type='bronze', awarded_for='Comment').exists():
         award_badge(user, 'bronze', awarded_for='Comment')
-    elif comment_count == 10 and not Badge.objects.filter(user=user, badge_type='silver', awarded_for='Comment').exists():
+    elif comment_count == 10 and not Badge.objects.filter(user=user, badge_type='silver',
+                                                          awarded_for='Comment').exists():
         award_badge(user, 'silver', awarded_for='Comment')
     elif comment_count == 50 and not Badge.objects.filter(user=user, badge_type='gold', awarded_for='Comment').exists():
         award_badge(user, 'gold', awarded_for='Comment')
-    elif comment_count == 100 and not Badge.objects.filter(user=user, badge_type='brilliant', awarded_for='Comment').exists():
+    elif comment_count == 100 and not Badge.objects.filter(user=user, badge_type='brilliant',
+                                                           awarded_for='Comment').exists():
         award_badge(user, 'brilliant', awarded_for='Comment')
 
 
@@ -74,14 +82,62 @@ def home(request):
 
 
 def profile(request):
+    user = request.user
+    completed_goals_count = CompletedGoals.objects.filter(user=user).count()
+    activities_count = Activity.objects.filter(user=user).count()
+    workouts_count = Workout.objects.filter(user=user).count()
+    badges = Badge.objects.filter(user=user).values('badge_type').annotate(count=Count('id'))
+
     username = None
     if request.user.is_authenticated:
         username = request.user.username
-    send_notif, created = SendNotif.objects.get_or_create(user=request.user)
+
+    send_notif, created = SendNotif.objects.get_or_create(user=user)
     if send_notif.accept_notif:
-        return render(request, "profile.html", {'username': username, 'send_notif': send_notif})
+        return render(request, "profile_content.html", {'username': username, 'send_notif': send_notif,
+                                                        'completed_goals_count': completed_goals_count,
+                                                        'activities_count': activities_count,
+                                                        'workouts_count': workouts_count,
+                                                        'badges': badges})
     else:
-        return render(request, "profile.html", {'username': username})
+        return render(request, "profile_content.html", {'username': username,
+                                                        'completed_goals_count': completed_goals_count,
+                                                        'activities_count': activities_count,
+                                                        'workouts_count': workouts_count,
+                                                        'badges': badges})
+
+
+def other_profile(request, user_id):
+    if user_id == request.user.id:
+        return redirect('profile')
+
+    user = User.objects.filter(id=user_id).first()
+    completed_goals_count = CompletedGoals.objects.filter(user=user).count()
+    activities_count = Activity.objects.filter(user=user).count()
+    workouts_count = Workout.objects.filter(user=user).count()
+    badges = Badge.objects.filter(user=user).values('badge_type').annotate(count=Count('id'))
+
+    context = {
+        'completed_goals_count': completed_goals_count,
+        'activities_count': activities_count,
+        'workouts_count': workouts_count,
+        'badges': badges,
+        'username': user.username,
+        'user_id':user_id
+    }
+    return render(request, 'friends_profile.html', context)
+
+
+def add_friend(request, friend_id):
+    friend = User.objects.get(id=friend_id)
+    if friend != request.user:
+        Friendship.objects.get_or_create(user=request.user, friend=friend)
+    return redirect('home')
+
+
+def friends_list(request):
+    friends = Friendship.objects.filter(user=request.user).all()
+    return render(request, 'friends_list.html', {'friends': friends})
 
 
 def logout_view(request):
@@ -289,9 +345,15 @@ def toggle_notification_setting(request):
 
 
 def achievements(request):
-    workout_badge = Badge.objects.filter(user=request.user, awarded_for='Workout').values('badge_type').annotate(count=Count('badge_type'))
-    goal_badge = Badge.objects.filter(user=request.user, awarded_for='Goal').values('badge_type').annotate(count=Count('badge_type'))
-    post_badge = Badge.objects.filter(user=request.user, awarded_for='Post').values('badge_type').annotate(count=Count('badge_type'))
-    comments_badge = Badge.objects.filter(user=request.user, awarded_for='Comment').values('badge_type').annotate(count=Count('badge_type'))
+    workout_badge = Badge.objects.filter(user=request.user, awarded_for='Workout').values('badge_type').annotate(
+        count=Count('badge_type'))
+    goal_badge = Badge.objects.filter(user=request.user, awarded_for='Goal').values('badge_type').annotate(
+        count=Count('badge_type'))
+    post_badge = Badge.objects.filter(user=request.user, awarded_for='Post').values('badge_type').annotate(
+        count=Count('badge_type'))
+    comments_badge = Badge.objects.filter(user=request.user, awarded_for='Comment').values('badge_type').annotate(
+        count=Count('badge_type'))
 
-    return render(request, 'achievements.html', {'workout_badge': workout_badge, 'goal_badge': goal_badge, 'post_badge':post_badge, 'comments_badge':comments_badge})
+    return render(request, 'achievements.html',
+                  {'workout_badge': workout_badge, 'goal_badge': goal_badge, 'post_badge': post_badge,
+                   'comments_badge': comments_badge})

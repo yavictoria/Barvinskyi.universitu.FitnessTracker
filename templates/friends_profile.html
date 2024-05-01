@@ -1,0 +1,68 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f0f0f0; /* Light gray background */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-top: 20px;
+            color: #333;
+            text-align: center;
+        }
+        h2 {
+            margin-top: 20px;
+            color: #555; /* Dark gray text color */
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+            color: #777; /* Medium gray text color */
+        }
+        p {
+            color: #999; /* Light gray text color */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>You are watching {{ username }}'s profile</h1>
+        <h2>Completed Goals: {{ completed_goals_count }}</h2>
+        <h2>Activities: {{ activities_count }}</h2>
+        <h2>Workouts: {{ workouts_count }}</h2>
+
+        <h2>Badges:</h2>
+        <ul>
+        {% if not badges %}
+            <p>There aren't any badges</p>
+        {% else %}
+            <ul>
+                {% for badge in badges %}
+                    <li>{{ badge.badge_type }}: {{ badge.count }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        </ul>
+
+        <form action="{% url 'add_friend' user_id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Add as Friend</button>
+        </form>
+    </div>
+</body>
+</html>

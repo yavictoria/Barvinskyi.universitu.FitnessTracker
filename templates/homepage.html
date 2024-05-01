@@ -34,6 +34,7 @@
         {% if user.is_authenticated %}
                 {% if request.path != '/dashboard/' and request.path != '/create_activity/' and request.path != '/achievements/' %}
                     <a href="profile/">Profile</a>
+                    <a href="friends/">Friends</a>
                     <a href="dashboard/">View overall statistic</a>
                     <a href="create_activity/">Create an Activity</a>
                     <a href="achievements/">Achievements</a>
