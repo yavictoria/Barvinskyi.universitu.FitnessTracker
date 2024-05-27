@@ -94,3 +94,8 @@ Week 9 (04/24 - 05/01):
 - Design UI for social features such as friend requests and activity sharing ✔️
 - Implement backend logic for handling social interactions ✔️
 - Write unit tests for social integration functionalities
+
+  ## Anti-Lab 2
+- Name: Victoria Yatsiuk
+- Project: https://github.com/yavictoria/Yatsiuk.University.Pinterest
+- Fork: https://github.com/yavictoria/Barvinskyi.universitu.FitnessTracker
