@@ -1,0 +1,24 @@
+{% extends 'profile.html' %}
+
+{% block content %}
+<div class="content">
+    <div class="content-topic">
+        <h2>Register Workout</h2>
+        <form method="post">
+            {% csrf_token %}
+            <label for="description">Description:</label><br>
+            <textarea id="description" name="description" rows="4"></textarea><br>
+            <input type="checkbox" id="all_sets_done" name="all_sets_done">
+            <label for="all_sets_done">All sets were done</label><br>
+            <input type="checkbox" id="all_arms_done" name="all_arms_done">
+            <label for="all_arms_done">All arms exercises were done</label><br>
+            <input type="checkbox" id="all_legs_done" name="all_legs_done">
+            <label for="all_legs_done">All legs exercises were done</label><br>
+            <input type="checkbox" id="all_chest_done" name="all_chest_done">
+            <label for="all_chest_done">All chest exercises were done</label><br>
+            <button type="submit">Submit</button>
+        </form>
+        <a href="{% url 'profile' %}">Back to Profile</a>
+    </div>
+</div>
+{% endblock %}

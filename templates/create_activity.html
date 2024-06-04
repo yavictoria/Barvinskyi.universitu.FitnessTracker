@@ -1,0 +1,12 @@
+{% extends 'homepage.html' %}
+
+{% block content %}
+<section class="create-activity">
+  <h2>Create Activity</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+  </form>
+</section>
+{% endblock %}

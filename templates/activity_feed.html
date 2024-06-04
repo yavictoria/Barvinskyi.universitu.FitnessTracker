@@ -1,0 +1,139 @@
+{% extends 'homepage.html' %}
+
+{% block content %}
+<style>
+  /* CSS Styles for Activity Feed */
+  .activity-feed {
+    margin-top: 30px;
+  }
+
+  .activity-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .activity-card {
+    width: 100%;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .activity-card h2 {
+    margin-top: 0;
+    font-size: 18px;
+    color: #333;
+  }
+
+  .activity-card p {
+    color: #666;
+  }
+
+  .activity-card button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .activity-card .like-button {
+    background-color: #4285F4;
+  }
+
+  .activity-card .comment-button {
+    background-color: #f44336;
+  }
+
+  .activity-card button:hover {
+    opacity: 0.8;
+  }
+
+  .comments-section {
+    display: none;
+    margin-top: 10px;
+  }
+
+  .comments-section.show {
+    display: block;
+  }
+
+  .comment {
+    background-color: #f9f9f9;
+    border-left: 6px solid #ccc;
+    padding: 10px;
+    margin-top: 10px;
+  }
+
+  .comment p {
+    margin: 0;
+  }
+
+  .comment button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .comment button:hover {
+    opacity: 0.8;
+  }
+</style>
+
+<section class="activity-feed">
+  <h2>Activity Feed</h2>
+  {% for activity in activities %}
+  <div class="activity-container">
+    <div class="activity-card">
+      <p>{{ activity.pub_date }} - <a href="{% url 'other_profile' activity.user.id %}">{{ activity.user.username }}</a></p>
+      <p>{{ activity.content }}</p>
+      <p>Completed Goals: {{ activity.completed_goal.description }}</p>
+      <p>Target value: {{ activity.completed_goal.target_value }}</p>
+      <p>Achieved value: {{ activity.completed_goal.achieved_value }}</p>
+      <div class="button-container">
+        <form method="post" action="{% url 'like_activity' activity.id %}">
+          {% csrf_token %}
+          <button type="submit" class="like-button">
+              Like (<span class="like-count">{{ activity.likes }}</span>)
+          </button>
+        </form>
+        <button class="comment-button" onclick="toggleComments(this)">Comments</button>
+      </div>
+    </div>
+    <div class="comments-section" style="display: none;">
+      {% for comment in activity.comments.all %}
+      <div class="comment">
+        <p>{{ comment.pub_date }} - <a href="{% url 'other_profile' comment.user.id %}">{{ comment.user.username }}</a></p>
+        <p>{{ comment.comment_text }}</p>
+      </div>
+      {% endfor %}
+      <form method="post" action="{% url 'add_comment' activity.id %}">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit">Add Comment</button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</section>
+
+
+<script>
+  function toggleComments(button) {
+      const activityContainer = button.closest('.activity-container');
+      const commentsSection = activityContainer.querySelector('.comments-section');
+      commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+  }
+</script>
+
+{% endblock %}

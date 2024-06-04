@@ -1,0 +1,91 @@
+{% extends 'homepage.html' %}
+
+{% block content %}
+    <style>
+        .main {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .achievements {
+            margin-top: 20px;
+        }
+
+        .achievements h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .achievements ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .achievements ul li {
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .achievements ul li:before {
+            content: "\2022"; /* Bullet point character */
+            color: #007bff; /* Bullet point color */
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        .no-bullet {
+            list-style-type: none;
+            padding-left: 0;
+        }
+    </style>
+
+    <section class="main">
+        <div class="achievements">
+            <h3>Workout Achievements:</h3>
+            <ul class="no-bullet">
+                {% if workout_badge %}
+                    {% for badge in workout_badge %}
+                        <li>One {{ badge.badge_type }} badge!</li>
+                    {% endfor %}
+                {% else %}
+                    <li>No badges yet, try harder!</li>
+                {% endif %}
+            </ul>
+            <h3>Goal Achievements:</h3>
+            <ul class="no-bullet">
+                {% if goal_badge %}
+                    {% for badge in goal_badge %}
+                        <li>One {{ badge.badge_type }} badge!</li>
+                    {% endfor %}
+                {% else %}
+                    <li>No badges yet, try harder!</li>
+                {% endif %}
+            </ul>
+            <h3>Activities Achievements:</h3>
+            <ul class="no-bullet">
+                {% if post_badge %}
+                    {% for badge in post_badge %}
+                        <li>One {{ badge.badge_type }} badge!</li>
+                    {% endfor %}
+                {% else %}
+                    <li>No badges yet, try harder!</li>
+                {% endif %}
+            </ul>
+            <h3>Comments Achievements:</h3>
+            <ul class="no-bullet">
+                {% if comments_badge %}
+                    {% for badge in comments_badge %}
+                        <li>One {{ badge.badge_type }} badge!</li>
+                    {% endfor %}
+                {% else %}
+                    <li>No badges yet, try harder!</li>
+                {% endif %}
+            </ul>
+        </div>
+    </section>
+{% endblock %}

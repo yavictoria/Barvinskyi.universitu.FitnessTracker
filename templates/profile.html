@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <style>
+        body {
+            background-color: #f2f2f2;
+            color: #333;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .content {
+            margin: 50px auto;
+            width: 80%;
+            background-color: #ccc;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .content-topic {
+            text-align: center;
+        }
+        a {
+            text-decoration: none;
+            color: #333;
+            margin-top: 10px;
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #ddd;
+            border-radius: 5px;
+        }
+        a:hover {
+            background-color: #bbb;
+        }
+        .toggle-btn {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .toggle-btn:hover {
+            background-color: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="content-topic">
+            <p>Welcome, {{ request.user.username }}!</p>
+            <a href="/">Go to homepage</a>
+            <a href="{% url 'register_workout' %}">Register workout</a>
+            <a href="{% url 'create_fitness_goal' %}">Set personal goal</a>
+            <a href="{% url 'choose_goal' %}">Track progress towards goal</a>
+             {% if request.path == '/profile/' %}
+            <form method="post" action="{% url 'toggle_notification_setting' %}">
+                {% csrf_token %}
+                <button type="submit" class="toggle-btn">{% if send_notif.accept_notif %}
+                        Turn Off Notifications
+                    {% else %}
+                        Turn On Notifications
+                    {% endif %}
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    {% block content %} {% endblock %}
+</body>
+</html>

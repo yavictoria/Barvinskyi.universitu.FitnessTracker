@@ -1,0 +1,89 @@
+{% extends 'homepage.html' %}
+
+{% block content %}
+<style>
+  /* CSS Styles for Workout List */
+  .workout-list {
+    margin-top: 30px;
+  }
+
+  .workout-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .workout-card {
+    width: 45%;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .workout-card h3 {
+    margin-top: 0;
+    font-size: 18px;
+    color: #333;
+  }
+
+  .workout-card p {
+    color: #666;
+  }
+
+  .workout-card ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  .workout-card ul li {
+    margin-bottom: 10px;
+  }
+</style>
+
+<section class="workout-list">
+  <h2>Last Workouts</h2>
+  <div class="workout-container">
+    {% for log in logs %}
+    <div class="workout-card">
+      <h3>{{ log.date }}</h3>
+      <p>{{ log.description }}</p>
+      <ul>
+        <li>All Sets Done: {% if log.all_sets_done %} Yes {% else %} No {% endif %}</li>
+        <li>All Arms Done: {% if log.all_arms_done %} Yes {% else %} No {% endif %}</li>
+        <li>All Legs Done: {% if log.all_legs_done %} Yes {% else %} No {% endif %}</li>
+        <li>All Chest Done: {% if log.all_chest_done %} Yes {% else %} No {% endif %}</li>
+      </ul>
+    </div>
+    {% if forloop.counter|divisibleby:2 %}
+    </div><div class="workout-container">
+    {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+<section class="summary">
+  <h2>Summary</h2>
+  <div>
+    <p>Total Percentage of All Sets Done: {{ percentage_all_sets_done }}%</p>
+    <p>Total Percentage of All Arms Done: {{ percentage_all_arms_done }}%</p>
+    <p>Total Percentage of All Legs Done: {{ percentage_all_legs_done }}%</p>
+    <p>Total Percentage of All Chest Done: {{ percentage_all_chest_done }}%</p>
+  </div>
+</section>
+
+<section class="completed-goals">
+  <h2>Completed Goals</h2>
+  <div class="workout-container">
+    {% for goal in completed_goals %}
+    <div class="workout-card">
+      <h3>{{ goal.description }}</h3>
+      <p>Goal Type: {{ goal.get_goal_type_display }}</p>
+      <p>Target Value: {{ goal.target_value }}</p>
+      <p>Achieved Value: {{ goal.achieved_value }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
